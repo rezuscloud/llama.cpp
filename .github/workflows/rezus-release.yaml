@@ -38,8 +38,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version tag (e.g. b9620-rezus.1). Will be created if absent."
-        required: true
+        description: "Version tag (e.g. b9620-rezus.1). Leave empty to auto-derive from commit count."
+        required: false
 
 permissions:
   contents: write
@@ -63,7 +63,14 @@ jobs:
         id: ver
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION="${{ inputs.version }}"
+            INPUT_VERSION="${{ inputs.version }}"
+            if [ -z "$INPUT_VERSION" ]; then
+              # Auto-derive from full-history commit count, matching llama.cpp's
+              # own build-number convention (0.0.<count>).
+              BUILD=$(git rev-list --count HEAD)
+              INPUT_VERSION="b${BUILD}-rezus.1"
+            fi
+            VERSION="$INPUT_VERSION"
           else
             VERSION="${GITHUB_REF#refs/tags/}"
           fi
