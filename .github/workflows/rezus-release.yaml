@@ -1,0 +1,189 @@
+name: rezus-release
+
+# RezusCloud llama.cpp release pipeline.
+#
+# Builds the Vulkan server image (amd64) from this fork. Two things differ from
+# the upstream docker.yml build that are essential for a *working* Vulkan backend:
+#
+#   1. shm-size: 2g
+#      vulkan-shaders-gen forks one `glslc` subprocess per shader (hundreds of
+#      them during the matmul subgroup shader pass). BuildKit's default /dev/shm
+#      (64 MB) is too small for this fork() storm — the children fail with
+#      "Cannot allocate memory" / "Failed to fork process".
+#      Upstream bug #24393 then SWALLOWS those subprocess failures
+#      (vulkan-shaders-gen checks stderr text, not exit code, and the error is
+#      not propagated out of string_to_spv()), so the build reports SUCCESS while
+#      producing a libggml-vulkan.so with hundreds of undefined
+#      `matmul_id_subgroup_*` symbols. That .so dlopen()s at runtime, so ggml
+#      falls back to CPU and logs "no usable GPU found".
+#      Adequate shm-size means the shaders actually compile.
+#
+#   2. Post-build dlopen verification
+#      Belt-and-suspenders guard against #24393: after building, we load
+#      libggml-vulkan.so from the image. If shader generation silently failed,
+#      dlopen raises (undefined symbols) and the build FAILS — a broken image can
+#      never be pushed. This needs no GPU; it only checks symbol resolution.
+#
+# The Dockerfile itself is IDENTICAL to upstream (.devops/vulkan.Dockerfile), so
+# upstream merges stay conflict-free. The fix lives entirely in this workflow.
+#
+# Versioning: llama.cpp has no SemVer releases (upstream tags each commit as
+# master-<shortsha>). We version as b<commit-count>-rezus.<n>, where the commit
+# count is the full-history rev-list count at the built commit.
+
+on:
+  push:
+    tags:
+      - "b[0-9]+-rezus.[0-9]+"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag (e.g. b9620-rezus.1). Will be created if absent."
+        required: true
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+    name: Build server-vulkan (amd64)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout (full history for build-number + version)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Resolved version: $VERSION"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build server-vulkan image (shm-size fix for #24393)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: .devops/vulkan.Dockerfile
+          target: server
+          platforms: linux/amd64
+          load: true          # load into daemon so we can verify before pushing
+          push: false
+          shm-size: 2g        # THE FIX — see header comment + upstream #24393
+          tags: ${{ env.IMAGE }}:server-vulkan-${{ steps.ver.outputs.version }}
+          build-args: |
+            BUILD_DATE=${{ steps.ver.outputs.version }}
+            APP_VERSION=${{ steps.ver.outputs.version }}
+            APP_REVISION=${{ github.sha }}
+            IMAGE_URL=https://github.com/${{ github.repository }}
+            IMAGE_SOURCE=https://github.com/${{ github.repository }}
+
+      - name: Verify libggml-vulkan.so loads (guards upstream #24393)
+        run: |
+          set -euo pipefail
+          # Build a throwaway image ON TOP of the just-built one to add python3
+          # for the dlopen probe (the server image is minimal, no python). If
+          # libggml-vulkan.so has undefined shader symbols (the #24393 failure
+          # mode), ctypes.CDLL raises OSError and this RUN — and the build — fails.
+          cat > /tmp/Dockerfile.verify <<EOF
+          FROM ${{ env.IMAGE }}:server-vulkan-${{ steps.ver.outputs.version }}
+          RUN apt-get update -qq && apt-get install -y -qq python3 >/dev/null && rm -rf /var/lib/apt/lists/*
+          RUN python3 -c "import ctypes; ctypes.CDLL('/app/libggml-vulkan.so'); print('OK: libggml-vulkan.so loaded — all shader symbols resolved')"
+          EOF
+          docker build --no-cache -f /tmp/Dockerfile.verify .
+          echo "::notice::libggml-vulkan.so verified loadable — Vulkan backend will not fall back to CPU"
+
+      - name: Push verified image
+        run: |
+          docker push ${{ env.IMAGE }}:server-vulkan-${{ steps.ver.outputs.version }}
+
+      - name: Tag + push floating latest
+        run: |
+          docker tag ${{ env.IMAGE }}:server-vulkan-${{ steps.ver.outputs.version }} \
+                      ${{ env.IMAGE }}:server-vulkan-rezus
+          docker push ${{ env.IMAGE }}:server-vulkan-rezus
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create / move tag (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git tag -f "${{ steps.ver.outputs.version }}"
+          git push origin "${{ steps.ver.outputs.version }}"
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          PREV_TAG=$(git tag -l 'b*-rezus.*' --sort=-v:refname | head -2 | tail -1)
+          if [ -z "$PREV_TAG" ]; then
+            NOTES="Initial rezus release of llama.cpp server-vulkan with the upstream #24393 build fix (shm-size + dlopen verification)."
+          else
+            NOTES=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s (%h)" --no-merges | head -40)
+          fi
+          {
+            echo "notes<<EOF"
+            echo "$NOTES"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.version }}
+          body: |
+            ## RezusCloud llama.cpp server-vulkan ${{ steps.ver.outputs.version }}
+
+            Built from this fork with the upstream build-defect fix for
+            [ggml-org/llama.cpp#24393](https://github.com/ggml-org/llama.cpp/issues/24393)
+            (`vulkan-shaders-gen` swallows fork failures under low `/dev/shm`,
+            producing a `libggml-vulkan.so` that silently falls back to CPU).
+
+            This build passes `shm-size: 2g` to the build step and is gated by a
+            post-build `dlopen` verification of `libggml-vulkan.so`, so a broken
+            Vulkan backend can never ship.
+
+            ### Image
+            - `ghcr.io/rezuscloud/llama.cpp:server-vulkan-${{ steps.ver.outputs.version }}`
+            - `ghcr.io/rezuscloud/llama.cpp:server-vulkan-rezus` (floating latest)
+
+            ### Changes
+            ${{ steps.notes.outputs.notes }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
