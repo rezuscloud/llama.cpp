@@ -96,7 +96,7 @@ jobs:
           platforms: linux/amd64
           load: true          # load into daemon so we can verify before pushing
           push: false
-          shm-size: 2g        # THE FIX — see header comment + upstream #24393
+          shm-size: 2g        # headroom for /dev/shm (see header comment + upstream #24393)
           tags: ${{ env.IMAGE }}:server-vulkan-${{ steps.ver.outputs.version }}
           build-args: |
             BUILD_DATE=${{ steps.ver.outputs.version }}
@@ -104,6 +104,12 @@ jobs:
             APP_REVISION=${{ github.sha }}
             IMAGE_URL=https://github.com/${{ github.repository }}
             IMAGE_SOURCE=https://github.com/${{ github.repository }}
+            # Cap concurrent glslc shader compiles. Each heavy subgroup matmul
+            # shader (q6_k/mxfp4/nvfp4) uses several GB; 2 concurrent keeps a
+            # 16 GB runner well under the fork()-ENOMEM cliff. Combined with
+            # the post-build dlopen verification, a broken Vulkan backend can
+            # never ship. See vulkan-shaders-gen.cpp + upstream #24393.
+            GGML_VULKAN_SHADER_CONCURRENCY=2
 
       - name: Verify libggml-vulkan.so loads (guards upstream #24393)
         run: |
