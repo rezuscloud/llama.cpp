@@ -1,0 +1,13 @@
+# Fork Divergence Manifest
+# Generated: 2026-06-14
+# Source: git diff rezus/main upstream/master
+#
+# REGENERATE: ./scripts/generate-manifest.sh > rezus-manifest.yaml
+
+deletions:
+
+patches:
+additive:
+  - .github/workflows/rezus-release.yaml
+  - .github/workflows/rezus-sync.yaml
+  - scripts/generate-manifest.sh
