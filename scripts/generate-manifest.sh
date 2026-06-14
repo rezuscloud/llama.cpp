@@ -33,7 +33,7 @@ echo "patches:"
 git diff --name-only "$BRANCH" "$UPSTREAM" -- \
   '*.c' '*.cpp' '*.cc' '*.h' '*.hpp' '*.inl' '*.cu' '*.comp' '*.vert' '*.frag' \
   '*.go' '*.yaml' '*.yml' '*.xml' '*.ts' '*.tsx' '*.json' '*.jsx' '*.css' '*.toml' '*.mod' \
-  'CMakeLists.txt' '*.cmake' 'Dockerfile*' \
+  'CMakeLists.txt' '*.cmake' '*Dockerfile*' \
   ':(exclude)*.lock' ':(exclude)*.tgz' ':(exclude)*.gz' ':(exclude)*.zip' \
   ':(exclude)go.sum' \
   > "$WORKDIR/files.txt"
