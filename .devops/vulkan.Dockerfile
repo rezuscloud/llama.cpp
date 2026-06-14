@@ -2,6 +2,11 @@ ARG UBUNTU_VERSION=26.04
 ARG BUILD_DATE=N/A
 ARG APP_VERSION=N/A
 ARG APP_REVISION=N/A
+# REZUS: cap concurrent glslc shader compiles to stay within CI runner RAM.
+# See vulkan-shaders-gen.cpp (GGML_VULKAN_SHADER_CONCURRENCY) + upstream #24393.
+# Default 4 is a safe ceiling for a 16 GB runner; override via build-arg.
+# Unset (empty) falls back to the in-source default (min(16, hw_concurrency)).
+ARG GGML_VULKAN_SHADER_CONCURRENCY=4
 
 FROM ubuntu:$UBUNTU_VERSION AS build
 
@@ -17,7 +22,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN cmake -B build -DGGML_NATIVE=OFF -DGGML_VULKAN=ON -DLLAMA_BUILD_TESTS=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON && \
+RUN export GGML_VULKAN_SHADER_CONCURRENCY="${GGML_VULKAN_SHADER_CONCURRENCY}" && \
+    cmake -B build -DGGML_NATIVE=OFF -DGGML_VULKAN=ON -DLLAMA_BUILD_TESTS=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON && \
     cmake --build build --config Release -j$(nproc)
 
 RUN mkdir -p /app/lib && \

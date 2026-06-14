@@ -318,6 +318,21 @@ compile_count_guard acquire_compile_slot() {
     // wait until fewer than N compiles are in progress.
     // 16 is an arbitrary limit, the goal is to avoid "failed to create pipe" errors.
     uint32_t N = std::max(1u, std::min(16u, std::thread::hardware_concurrency()));
+    // REZUS: allow RAM-constrained build environments (e.g. CI runners) to cap
+    // concurrent glslc subprocesses. Each glslc compiling the heavy subgroup
+    // matmul shaders (q6_k / mxfp4 / nvfp4, with coopmat + f16acc) can consume
+    // several GB; the default of up to 16 concurrent compiles exhausts a 16 GB
+    // runner and fork() fails with ENOMEM. vulkan-shaders-gen swallows those
+    // subprocess failures (upstream #24393), producing a broken
+    // libggml-vulkan.so that silently falls back to CPU at runtime.
+    // GGML_VULKAN_SHADER_CONCURRENCY=<n> overrides the cap (clamped to the
+    // hardware limit above). Unset = upstream behaviour.
+    if (const char * env = std::getenv("GGML_VULKAN_SHADER_CONCURRENCY")) {
+        int e = std::atoi(env);
+        if (e > 0) {
+            N = std::min(N, (uint32_t) e);
+        }
+    }
     std::unique_lock<std::mutex> guard(compile_count_mutex);
     compile_count_cond.wait(guard, [N] { return compile_count < N; });
     compile_count++;
