@@ -1,0 +1,102 @@
+name: rezus-sync
+
+# Weekly upstream sync for the llama.cpp fork.
+# Opens a PR merging upstream/master into rezus/main. After the PR merges, tag a
+# new release (rezus-release.yaml) to rebuild the Vulkan image against the new
+# upstream. See wiki/concepts/fork-maintenance.md for the pattern.
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"   # Monday 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: rezus/main
+          fetch-depth: 0
+          token: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "rezuscloud-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/ggml-org/llama.cpp.git || true
+          git fetch upstream master
+
+      - name: Check for new upstream commits
+        id: check
+        run: |
+          BASE=$(git rev-parse HEAD)
+          UPSTREAM=$(git rev-parse upstream/master)
+          if [ "$BASE" = "$UPSTREAM" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date ($BASE)"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            COUNT=$(git rev-list --count HEAD..upstream/master)
+            echo "$COUNT new upstream commits"
+            echo "count=$COUNT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create sync branch + merge
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          BRANCH="rezus/sync-$(date -u +%Y-%m-%d)"
+          git checkout -b "$BRANCH"
+          # Merge upstream. Our only intentional divergence is the .github/workflows
+          # + scripts/ + rezus-manifest.yaml added on top of an otherwise clean
+          # upstream mirror, so conflicts should be rare.
+          git merge upstream/master --no-edit || {
+            echo "::warning::Merge conflicts detected — needs manual resolution"
+            git status --short
+            exit 1
+          }
+
+      - name: Regenerate divergence manifest
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          chmod +x scripts/generate-manifest.sh
+          ./scripts/generate-manifest.sh > rezus-manifest.yaml
+
+      - name: Verify rezus patches survived the merge
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          [ -f rezus-manifest.yaml ] || { echo "no manifest"; exit 1; }
+          [ -f .github/workflows/rezus-release.yaml ] || { echo "::error::rezus-release.yaml lost"; exit 1; }
+          [ -f scripts/generate-manifest.sh ] || { echo "::error::generate-manifest.sh lost"; exit 1; }
+          grep -q "shm-size: 2g" .github/workflows/rezus-release.yaml || { echo "::error::shm-size fix lost from release workflow"; exit 1; }
+          echo "All rezus artifacts intact after merge."
+
+      - name: Push + open PR
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        run: |
+          BRANCH="rezus/sync-$(date -u +%Y-%m-%d)"
+          git push origin "$BRANCH"
+          gh pr create \
+            --base rezus/main \
+            --head "$BRANCH" \
+            --title "sync: merge upstream/master → rezus/main (${{ steps.check.outputs.count }} commits)" \
+            --body "$(cat <<EOF
+          Upstream sync: ${{ steps.check.outputs.count }} new commits from \`upstream/master\`.
+
+          The divergences from upstream are intentional (release workflow with the
+          #24393 shm-size fix, manifest generator). This PR verifies they survived
+          the merge.
+
+          After merge, tag a new \`b*-rezus.*\` release to rebuild the Vulkan image.
+          EOF
+          )"
