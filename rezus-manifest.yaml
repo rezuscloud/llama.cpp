@@ -7,6 +7,10 @@
 deletions:
 
 patches:
+  - file: .devops/vulkan.Dockerfile
+    signature: 'ARG GGML_VULKAN_SHADER_CONCURRENCY=4'
+    occurrences: 1
+
   - file: ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
     signature: 'if (const char * env = std::getenv("GGML_VULKAN_SHADER_CONCURRENCY")) {'
     occurrences: 1
