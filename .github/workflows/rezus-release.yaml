@@ -52,6 +52,8 @@ jobs:
   build:
     name: Build server-vulkan (amd64)
     runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
     steps:
       - name: Checkout (full history for build-number + version)
         uses: actions/checkout@v4
@@ -62,18 +64,10 @@ jobs:
       - name: Resolve version
         id: ver
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            INPUT_VERSION="${{ inputs.version }}"
-            if [ -z "$INPUT_VERSION" ]; then
-              # Auto-derive from full-history commit count, matching llama.cpp's
-              # own build-number convention (0.0.<count>).
-              BUILD=$(git rev-list --count HEAD)
-              INPUT_VERSION="b${BUILD}-rezus.1"
-            fi
-            VERSION="$INPUT_VERSION"
-          else
-            VERSION="${GITHUB_REF#refs/tags/}"
-          fi
+          # The build job already resolved (and possibly auto-derived) the
+          # version; reuse it instead of re-deriving (which would yield empty
+          # for workflow_dispatch + auto-version).
+          VERSION="${{ needs.build.outputs.version }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Resolved version: $VERSION"
 
