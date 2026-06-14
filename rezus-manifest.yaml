@@ -7,6 +7,10 @@
 deletions:
 
 patches:
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+    signature: 'if (const char * env = std::getenv("GGML_VULKAN_SHADER_CONCURRENCY")) {'
+    occurrences: 1
+
 additive:
   - .github/workflows/rezus-release.yaml
   - .github/workflows/rezus-sync.yaml
