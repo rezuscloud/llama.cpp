@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.14...3.28) # for add_link_options and implicit 
 project("llama.cpp" C CXX)
 include(CheckIncludeFileCXX)
 
+# REZUS: GGML_VULKAN_SHADER_CONCURRENCY environment variable support
+# See .devops/vulkan.Dockerfile and ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+# This env var caps concurrent glslc shader compiles to prevent ENOMEM under RAM pressure
+# (upstream issue #24393). Set via Docker build-arg ARG GGML_VULKAN_SHADER_CONCURRENCY.
+
 #set(CMAKE_WARN_DEPRECATED YES)
 set(CMAKE_WARN_UNUSED_CLI YES)
 
