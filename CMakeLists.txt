@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.14...3.28) # for add_link_options and implicit target directories.
 project("llama.cpp" C CXX)
+
+# REZUS: Vulkan shader concurrency cap (GGML_VULKAN_SHADER_CONCURRENCY) is set via
+# runtime env var checked in vulkan-shaders-gen.cpp and passed via Dockerfile build-arg.
+# See upstream #24393 for the build-defect this fixes.
 include(CheckIncludeFileCXX)
 
 #set(CMAKE_WARN_DEPRECATED YES)
