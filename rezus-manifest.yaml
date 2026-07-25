@@ -1,21 +1,1466 @@
 # Fork Divergence Manifest
-# Generated: 2026-06-14
+# Generated: 2026-07-25
 # Source: git diff rezus/main upstream/master
 #
 # REGENERATE: ./scripts/generate-manifest.sh > rezus-manifest.yaml
 
 deletions:
+  - skills/
 
 patches:
+  - file: .devops/cann.Dockerfile
+    signature: 'COPY --from=build /app/full/llama-cli /app/full/llama-completion /app'
+    occurrences: 1
+
+  - file: .devops/cpu.Dockerfile
+    signature: 'FROM ubuntu:$UBUNTU_VERSION AS build'
+    occurrences: 1
+
+  - file: .devops/cuda.Dockerfile
+    signature: 'ARG BASE_CUDA_DEV_CONTAINER=nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}'
+    occurrences: 1
+
+  - file: .devops/intel.Dockerfile
+    signature: 'FROM intel/deep-learning-essentials:$ONEAPI_VERSION AS build'
+    occurrences: 1
+
+  - file: .devops/llama-cli-cann.Dockerfile
+    signature: 'FROM ascendai/cann:$ASCEND_VERSION AS build'
+    occurrences: 1
+
+  - file: .devops/musa.Dockerfile
+    signature: 'ARG BASE_MUSA_DEV_CONTAINER=mthreads/musa:${MUSA_VERSION}-devel-ubuntu${UBUNTU_VERSION}-amd64'
+    occurrences: 1
+
+  - file: .devops/openvino.Dockerfile
+    signature: 'ARG OPENVINO_VERSION_MAJOR=2026.0'
+    occurrences: 1
+
+  - file: .devops/rocm.Dockerfile
+    signature: 'ARG BASE_ROCM_DEV_CONTAINER=rocm/dev-ubuntu-${UBUNTU_VERSION}:${ROCM_VERSION}-complete'
+    occurrences: 1
+
+  - file: .devops/s390x.Dockerfile
+    signature: 'FROM gcc:${GCC_VERSION} AS build'
+    occurrences: 1
+
   - file: .devops/vulkan.Dockerfile
     signature: 'ARG GGML_VULKAN_SHADER_CONCURRENCY=4'
     occurrences: 1
 
+  - file: .devops/zendnn.Dockerfile
+    signature: 'FROM ubuntu:$UBUNTU_VERSION AS build'
+    occurrences: 1
+
+  - file: .github/labeler.yml
+    signature: 'Nvidia GPU:'
+    occurrences: 1
+
+  - file: .github/workflows/build-cache.yml
+    signature: 'OPENVINO_VERSION_MAJOR: "2026.0"'
+    occurrences: 1
+
+  - file: .github/workflows/build-openvino.yml
+    signature: 'concurrency:'
+    occurrences: 2
+
+  - file: .github/workflows/build-self-hosted.yml
+    signature: ''.github/workflows/build.yml','
+    occurrences: 1
+
+  - file: .github/workflows/docker.yml
+    signature: '{ "tag": "cpu", "dockerfile": ".devops/s390x.Dockerfile", "platforms": "linux/s390x", "full": true, "light": true, "server": true, "free_disk_space": false, "runs_on": "ubuntu-24.04-s390x" },'
+    occurrences: 1
+
+  - file: .github/workflows/release.yml
+    signature: 'if echo "${{ github.event.head_commit.message }}" | grep -q '\[no release\]'; then'
+    occurrences: 1
+
+  - file: .github/workflows/ui-publish.yml
+    signature: 'hf buckets rm ggml-org/${{ env.HF_BUCKET_NAME }}/loading.html --yes 2>/dev/null || true'
+    occurrences: 1
+
+  - file: app/llama.cpp
+    signature: '{"serve",         "HTTP API server",                                    {"server"},   false, llama_server       },'
+    occurrences: 1
+
+  - file: common/arg.cpp
+    signature: 'static bool common_params_handle_remote_preset(common_params & params, llama_example ex) {'
+    occurrences: 1
+
+  - file: common/arg.h
+    signature: 'bool common_params_handle_models(common_params & params, llama_example curr_ex);'
+    occurrences: 1
+
+  - file: common/chat-auto-parser-generator.cpp
+    signature: 'response_format'
+    occurrences: 9
+
+  - file: common/chat-auto-parser.h
+    signature: 'std::string name_prefix;  // e.g., "<function=", "\"name\": \"", "functions."'
+    occurrences: 1
+
+  - file: common/chat-diff-analyzer.cpp
+    signature: 'analysis.reasoning.start             = "<think>\n\n";'
+    occurrences: 1
+
+  - file: common/chat-peg-parser.cpp
+    signature: 'std::string value_content = std::string(trim_trailing_space(trim_leading_space(node.text, 1), 1));'
+    occurrences: 1
+
+  - file: common/chat-peg-parser.h
+    signature: 'const std::vector<std::string> & parameters_order = {});'
+    occurrences: 1
+
+  - file: common/chat.cpp
+    signature: 'std::vector<common_chat_msg_span> common_chat_split_by_role(const std::string & prompt, const std::vector<common_chat_msg_delimiter> & delims) {'
+    occurrences: 1
+
+  - file: common/chat.h
+    signature: 'std::string role;'
+    occurrences: 2
+
+  - file: common/common.cpp
+    signature: 'LOG_WRN("failed to set process priority class %d : (%d)\n", prio, (int) GetLastError());'
+    occurrences: 1
+
+  - file: common/common.h
+    signature: 'int32_t                  reasoning_budget_tokens   = -1;   // -1 = disabled, >= 0 = token budget'
+    occurrences: 1
+
+  - file: common/download.cpp
+    signature: 'if (!file_exists && opts.skip_download) {'
+    occurrences: 1
+
+  - file: common/download.h
+    signature: 'bool skip_download = false; // if true, only validation is performed, common_skip_download_exception may be thrown if the file is missing or invalid'
+    occurrences: 1
+
+  - file: common/fit.cpp
+    signature: 'mparams_copy.use_mmap  = false;'
+    occurrences: 1
+
+  - file: common/http.h
+    signature: 'auto colon_pos = parts.host.find(':');'
+    occurrences: 1
+
+  - file: common/jinja/caps.cpp
+    signature: 'using caps_analyze_fn = std::function<void(bool, value &, value &)>;'
+    occurrences: 1
+
+  - file: common/jinja/caps.h
+    signature: 'bool supports_preserve_reasoning = false; // support assistant message with reasoning_content'
+    occurrences: 1
+
+  - file: common/jinja/runtime.cpp
+    signature: 'if (filter_id == "trim") {'
+    occurrences: 2
+
+  - file: common/json-schema-to-grammar.cpp
+    signature: '{"boolean", {"(\"true\" | \"false\") space", {}}},'
+    occurrences: 1
+
+  - file: common/log.cpp
+    signature: 'enum ggml_log_level level;'
+    occurrences: 1
+
+  - file: common/ngram-map.cpp
+    signature: 'if (key_idx >= map.size_last_begin) {'
+    occurrences: 1
+
+  - file: common/peg-parser.cpp
+    signature: 'struct trie {'
+    occurrences: 1
+
+  - file: common/peg-parser.h
+    signature: 'common_peg_gbnf_parser'
+    occurrences: 3
+
+  - file: common/preset.cpp
+    signature: 'static std::set<std::string> get_remote_preset_whitelist(const std::map<std::string, common_arg> & key_to_opt) {'
+    occurrences: 1
+
+  - file: common/preset.h
+    signature: 'common_preset_context(llama_example ex, bool only_remote_allowed = false);'
+    occurrences: 1
+
+  - file: common/reasoning-budget.cpp
+    signature: 'std::vector<llama_token> tokens;'
+    occurrences: 1
+
+  - file: common/reasoning-budget.h
+    signature: 'const struct llama_vocab       * vocab,'
+    occurrences: 1
+
+  - file: common/sampling.cpp
+    signature: 'params.reasoning_budget_start,'
+    occurrences: 1
+
+  - file: common/speculative.cpp
+    signature: 'LOG_DBG("%s: vocab_type tgt: %d\n", __func__, vocab_type_tgt);'
+    occurrences: 1
+
+  - file: docs/backend/snapdragon/CMakeUserPresets.json
+    signature: '"GGML_HEXAGON_FP32_QUANTIZE_GROUP_SIZE": "128",'
+    occurrences: 3
+
+  - file: examples/diffusion/diffusion-cli.cpp
+    signature: 'model_params.use_mmap           = params.use_mmap;'
+    occurrences: 1
+
+  - file: examples/training/finetune.cpp
+    signature: 'if (params.use_mmap) {'
+    occurrences: 1
+
+  - file: ggml/include/ggml-cuda.h
+    signature: 'GGML_BACKEND_API ggml_backend_buffer_type_t ggml_backend_cuda_split_buffer_type(int main_device, const float * tensor_split);'
+    occurrences: 1
+
+  - file: ggml/include/ggml-rpc.h
+    signature: 'static_assert(GGML_OP_COUNT == 97, "GGML_OP_COUNT has changed - update RPC_PROTO_PATCH_VERSION");'
+    occurrences: 1
+
+  - file: ggml/include/ggml.h
+    signature: 'GGML_TYPE_COUNT   = 42,'
+    occurrences: 1
+
+  - file: ggml/include/gguf.h
+    signature: 'GGML_API int64_t        gguf_get_n_tensors    (const struct gguf_context * ctx);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-backend-meta.cpp
+    signature: 'GGML_ASSERT(ggml_is_contiguous(tensor));'
+    occurrences: 4
+
+  - file: ggml/src/ggml-common.h
+    signature: 'GGML_TABLE_BEGIN(int8_t, kvalues_mxfp4, 16)'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cpu/amx/mmq.cpp
+    signature: 'parallel_for_ggml(params, n_batch, [&](int begin, int end) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cpu/arch/arm/quants.c
+    signature: 'ggml_ue4m3_to_fp32(x[ib].d[0]),'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cpu/arch/x86/quants.c
+    signature: 'const __m128i values128 = _mm_loadu_si128((const __m128i*)kvalues_mxfp4);'
+    occurrences: 2
+
+  - file: ggml/src/ggml-cpu/ggml-cpu.c
+    signature: 'if (ggml_is_quantized(node->src[0]->type)) {'
+    occurrences: 3
+
+  - file: ggml/src/ggml-cpu/ggml-cpu.cpp
+    signature: 'return src0->type == GGML_TYPE_F32 && src1->type == GGML_TYPE_F32;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cpu/kleidiai/kernels.cpp
+    signature: '/* .required_cpu       = */ CPU_FEATURE_SME,'
+    occurrences: 3
+
+  - file: ggml/src/ggml-cpu/kleidiai/kernels.h
+    signature: 'CPU_FEATURE_SME     = 8'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cpu/kleidiai/kleidiai.cpp
+    signature: '} static ctx = { CPU_FEATURE_NONE, nullptr, nullptr, 0, -1, 4 };'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cpu/llamafile/sgemm.cpp
+    signature: 'mnpack(0, m, 0, n);'
+    occurrences: 7
+
+  - file: ggml/src/ggml-cpu/ops.cpp
+    signature: 'o[dim] = src0->ne[dim];'
+    occurrences: 4
+
+  - file: ggml/src/ggml-cpu/simd-gemm.h
+    signature: 'a += A[i + kk] * B[kk * N + jj];'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cpu/vec.cpp
+    signature: 'sum1 = svmad_f32_m(pg, ax1, ay1, sum1);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/argsort.cu
+    signature: 'if (shared_mem > max_shared_mem || ncols > 1024) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/binbcast.cu
+    signature: 'const int              ne0,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/concat.cu
+    signature: 'if (ggml_is_contiguous(src0) && ggml_is_contiguous(src1)) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/conv-transpose-1d.cu
+    signature: 'int out_index = global_index / dst_ne0;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/convert.cu
+    signature: 'y[l+ 0] = d * (q[l] & 0xF) + dm;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/cpy.cu
+    signature: 'const int x = blockIdx.x * CUDA_CPY_TILE_DIM_2D + threadIdx.x;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/fattn.cu
+    signature: 'if (use_gqa_opt && gqa_ratio > 1) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/gated_delta_net.cu
+    signature: 'const int64_t attn_score_elems = S_v * H * n_tokens * n_seqs;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/getrows.cu
+    signature: 'const int i10 = blockIdx.x;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/ggml-cuda.cu
+    signature: 'if (device == current_device) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/mmf.cu
+    signature: 'static_cast<int>(n_experts), static_cast<int>(n_tokens), static_cast<int>(n_expert_used), static_cast<int>(ne11), si1, sis1, ctx.stream());'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/mmid.cu
+    signature: 'const int n_tokens, const int n_expert_used_var, const int nchannels_y, const int si1, const int sis1) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/mmq.cu
+    signature: 'case GGML_TYPE_MXFP4:'
+    occurrences: 2
+
+  - file: ggml/src/ggml-cuda/mmvq.cu
+    signature: 'if (use_bias) {'
+    occurrences: 2
+
+  - file: ggml/src/ggml-cuda/out-prod.cu
+    signature: 'for (int64_t i3 = 0; i3 < ne3; ++i3) {'
+    occurrences: 2
+
+  - file: ggml/src/ggml-cuda/quantize.cu
+    signature: 'const float * __restrict__ x, const int32_t * __restrict__ ids, void * __restrict__ vy,'
+    occurrences: 2
+
+  - file: ggml/src/ggml-cuda/set-rows.cu
+    signature: 'GGML_ASSERT(src0->type == GGML_TYPE_F32);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-cuda/top-k.cu
+    signature: 'ggml_cuda_pool_alloc<int> temp_dst_alloc(pool, ncols * nrows);'
+    occurrences: 2
+
+  - file: ggml/src/ggml-cuda/topk-moe.cu
+    signature: 'config.use_sigmoid     = args.sigmoid;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/ggml-hexagon.cpp
+    signature: 'static int    opt_use_hmx = 1; // when set, enable HMX; when 0, use HVX only'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp-drv.cpp
+    signature: 'dspqueue_create_pfn_t dspqueue_create_pfn = nullptr;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp-drv.h
+    signature: '* get_domain API: get domain struct from domain value.'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp-opnode.h
+    signature: 'void add_fused(ggml_tensor * t) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/act-ops.c
+    signature: 'struct htp_ops_context *  octx;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/argsort-ops.c
+    signature: 'static void htp_argsort_f32(unsigned int n, unsigned int i, void * data) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/cmake-toolchain.cmake
+    signature: 'if( ${TREE} MATCHES PAKMAN )'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/cumsum-ops.c
+    signature: 'int err = HTP_STATUS_OK;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/flash-attn-ops.c
+    signature: 'static __attribute__((noinline)) void hvx_vec_f32_to_f16_a(void *ptr, HVX_Vector v0, HVX_Vector v1)'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/hex-dma.h
+    signature: 'extern "C" {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/hex-utils.h
+    signature: 'static inline uint32_t hex_ceil_pow2(uint32_t x) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/hmx-queue.c
+    signature: 'static inline void hmx_lock(struct hmx_queue *q)'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/hmx-queue.h
+    signature: 'struct hmx_queue {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/hmx-utils.h
+    signature: 'int n_cols,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/htp-ctx.h
+    signature: 'const struct htp_tensor * dst;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/htp-ops.h
+    signature: 'HTP_TYPE_Q4_0x4x2 = 200,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/hvx-base.h
+    signature: 'HVX_Vector v = Q6_Vh_vdeal_Vh(hvx_vec_f32_to_f16_shuff(v0, v1));'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/main.c
+    signature: 'AEEResult htp_iface_open(const char * uri, remote_handle64 * handle) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/matmul-ops.c
+    signature: 'struct htp_matmul_context {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/rope-ops.c
+    signature: 'dma_queue_push_ddr_to_vtcm(dma_queue, dma_make_ptr(src_spad, src_addr),'
+    occurrences: 2
+
+  - file: ggml/src/ggml-hexagon/htp/ssm-conv.c
+    signature: 'src1_T[j * d_inner_per_thread + i] = src_row[j];'
+    occurrences: 1
+
+  - file: ggml/src/ggml-hexagon/htp/unary-ops.c
+    signature: 'size_t                    src0_spad_half_size;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-metal/ggml-metal-device.cpp
+    signature: 'case GGML_OP_CONCAT: op_str = "concat"; break;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-metal/ggml-metal-device.h
+    signature: 'struct ggml_metal_pipeline_with_params ggml_metal_library_get_pipeline_set_rows          (ggml_metal_library_t lib, enum ggml_type tidx, enum ggml_type tdst);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-metal/ggml-metal-ops.cpp
+    signature: 'auto pipeline = ggml_metal_library_get_pipeline_base(lib, GGML_OP_CONCAT);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-opencl/ggml-opencl.cpp
+    signature: 'if (strstr(device_name, "830") ||'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/ggml-decoder.cpp
+    signature: 'if (auto * env = getenv("GGML_OPENVINO_PRINT_CGRAPH_TENSOR_ADDRESS"); env && std::string(env) != "0") {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/ggml-decoder.h
+    signature: 'int ctx_swa = -1;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/ggml-openvino-extra.cpp
+    signature: 'device_name = getenv("GGML_OPENVINO_DEVICE") ? getenv("GGML_OPENVINO_DEVICE") : "CPU";'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/ggml-openvino-extra.h
+    signature: 'ov::Tensor weights;   // U4 or U8 extracted weights'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/ggml-openvino.cpp
+    signature: 'static const auto * stateful = getenv("GGML_OPENVINO_STATEFUL_EXECUTION");'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/ggml-quants.h
+    signature: 'void unpack_32_4(const uint8_t* data, uint8_t* dst);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/decoder.h
+    signature: 'virtual ov::Any get_attribute(const std::string& name) const = 0;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/frontend.h
+    signature: 'static std::shared_ptr<Model> convert(const InputModel::Ptr& model, bool naive = false);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/input_model.h
+    signature: 'explicit InputModel(const std::shared_ptr<GgmlDecoder>& gdecoder);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/node_context.h
+    signature: 'NodeContext(const std::shared_ptr<GgmlDecoder>& decoder,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/cont.cpp
+    signature: 'int op_case = context.get_op_case();'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/cpy.cpp
+    signature: 'auto res = std::make_shared<ov::op::v0::Convert>(context.get_input(0), context.get_output_type());'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/flash_attn_ext.cpp
+    signature: 'ov::Output<ov::Node> mask_sliced, res;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/get_rows.cpp
+    signature: 'int op_case = context.get_op_case();'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/glu_geglu.cpp
+    signature: 'src0 = context.get_input(0);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/glu_swiglu.cpp
+    signature: 'OutputVector translate_glu_swiglu(const NodeContext & context) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/mulmat.cpp
+    signature: 'ov::Output<ov::Node> B = context.get_input(0);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/permute.cpp
+    signature: 'FRONT_END_CHECK_IMPLEMENTED(op_case == 1 || op_case == 2 || op_case == 3 || op_case == 4,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/reshape.cpp
+    signature: 'if (context.get_input_shape(0) == context.get_output_shape()) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/rms_norm.cpp
+    signature: 'auto input_node = context.get_input(0);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/rope.cpp
+    signature: 'const int mode = (op_case & 0xFFFF0000) >> 16;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/set_rows.cpp
+    signature: 'auto data = context.get_input(0);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/softmax.cpp
+    signature: 'num_inputs_check(context, 1, 2);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/transpose.cpp
+    signature: 'context.get_input(0), ov::op::v0::Constant::create(ov::element::i64, {4}, {0, 1, 3, 2}));'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/unary_silu.cpp
+    signature: 'auto input = context.get_input(0);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op/view.cpp
+    signature: 'if (context.get_op_case() == 2) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op_table.cpp
+    signature: '{"GGML_OP_ADD",            op::translate_1to1_match_2_inputs<v1::Add>     },'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/op_table.h
+    signature: 'GGML_OP_CONVERTER(translate_add);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/translate_session.cpp
+    signature: 'void add_sliced_mask(TensorMap & tensor_map, GgmlDecoder & ggml_model_decoder) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/translate_session.h
+    signature: 'TranslateSession(const frontend::InputModel::Ptr& input_model,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/utils.cpp
+    signature: 'inp_pos = std::make_shared<ov::op::v0::Squeeze>(inp_pos, ov::op::v0::Constant::create(ov::element::i64, {1}, {0}));'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/openvino/utils.h
+    signature: 'void num_inputs_check(const NodeContext& context, size_t min_inputs, size_t max_inputs);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/utils.cpp
+    signature: 'if (getenv("GGML_OPENVINO_DUMP_CGRAPH")) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-openvino/utils.h
+    signature: 'ov_runtime_context() :'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/common.cpp
+    signature: 'static int ggml_sycl_get_env(const char *env_name, int default_val) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/common.hpp
+    signature: 'extern int g_ggml_sycl_disable_optimize;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/concat.cpp
+    signature: 'GGML_ASSERT(false && "ggml_sycl_op_concat: unsupported type");'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/dequantize.hpp
+    signature: 'return sycl::fma((dfloat) ((q >> (2 * g)) & 3), (dfloat) d, (dfloat) (-m));'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/dmmv.cpp
+    signature: '/*'
+    occurrences: 5
+
+  - file: ggml/src/ggml-sycl/dpct/helper.hpp
+    signature: 'GGML_ABORT("fatal error");'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/element_wise.cpp
+    signature: 'static void acc_f32(const float * x, const float * y, float * dst, const int64_t ne,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/fattn-vec.hpp
+    signature: 'static int ggml_sycl_fattn_vec_get_nthreads_host(const int cc) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/getrows.cpp
+    signature: 'get_rows_sycl<QK_K, 1, dequantize_q2_K>(ctx, dst->src[0], dst->src[1], dst, (const float *)dst->src[0]->data,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/ggml-sycl.cpp
+    signature: 'int g_ggml_sycl_disable_optimize = 0;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/mmvq.cpp
+    signature: 'const int        block_num_y   = ceil_div(nrows, GGML_SYCL_MMV_Y * (int) num_subgroups) * (int) num_subgroups;'
+    occurrences: 4
+
+  - file: ggml/src/ggml-sycl/norm.cpp
+    signature: 'static void norm_f32(const float* x, float* dst, const int ncols, const int64_t stride_row, const int64_t stride_channel,'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/outprod.cpp
+    signature: 'GGML_ASSERT(src0->type == GGML_TYPE_F32);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-sycl/set_rows.cpp
+    signature: '[=](sycl::nd_item<1> item_ct1) {'
+    occurrences: 2
+
+  - file: ggml/src/ggml-sycl/softmax.cpp
+    signature: 'size_t nreduce = nwarps / WARP_SIZE;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/ggml-vulkan.cpp
+    signature: 'static std::mutex queue_mutex;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/conv2d_mm.comp
+    signature: 'const uint32_t Csh_len    = csh_store != 0 ? BS_K * Csh_stride : 1;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/copy_to_quant.comp
+    signature: 'layout (binding = 0) readonly buffer S {float data_s[];};'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/l2_norm.comp
+    signature: 'const uint i3 = row / (p.ne11 * p.ne12);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
+    signature: 'void iter(inout FLOAT_TYPE temp[NUM_COLS][NUM_ROWS], const uint first_row, const uint num_rows, const uint tid, const uint i) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/mul_mm.comp
+    signature: 'const uint loadr_a = gl_LocalInvocationID.x % (BK / LOAD_VEC_A / LOAD_VEC_BATCH_A);'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_cm2.comp
+    signature: 'layout (constant_id = 5) const uint subgroup_size = 32;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/norm.comp
+    signature: 'layout (binding = 0) readonly buffer X {A_TYPE data_a[];};'
+    occurrences: 1
+
+  - file: ggml/src/ggml-vulkan/vulkan-shaders/unary.comp
+    signature: 'return x >= 0.0f ? 1.0f : 0.0f;'
+    occurrences: 1
+
   - file: ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
-    signature: 'if (const char * env = std::getenv("GGML_VULKAN_SHADER_CONCURRENCY")) {'
+    signature: 'void execute_command(std::vector<std::string>& command, std::string& stdout_str, std::string& stderr_str) {'
+    occurrences: 1
+
+  - file: ggml/src/ggml-webgpu/ggml-webgpu-shader-lib.hpp
+    signature: 'use_mmvq == other.use_mmvq;'
+    occurrences: 1
+
+  - file: ggml/src/ggml-webgpu/ggml-webgpu.cpp
+    signature: 'const size_t q8_src1_binding_size ='
+    occurrences: 1
+
+  - file: ggml/src/ggml.c
+    signature: 'void ggml_time_init(void) {'
+    occurrences: 2
+
+  - file: ggml/src/gguf.cpp
+    signature: '~gguf_writer_base(void) = default;'
+    occurrences: 1
+
+  - file: include/llama.h
+    signature: 'bool use_mmap;        // use mmap if possible'
+    occurrences: 1
+
+  - file: scripts/ui-assets.cmake
+    signature: 'set(NPM_MARKER "${UI_SOURCE_DIR}/node_modules/.package-lock.json")'
+    occurrences: 1
+
+  - file: src/llama-batch.cpp
+    signature: 'llama_ubatch llama_batch_allocr::split_equal(uint32_t n_ubatch, bool sequential) {'
+    occurrences: 1
+
+  - file: src/llama-batch.h
+    signature: 'llama_ubatch split_equal(uint32_t n_ubatch, bool sequential);'
+    occurrences: 1
+
+  - file: src/llama-context.cpp
+    signature: 'if (model.arch == LLM_ARCH_EAGLE3) {'
+    occurrences: 1
+
+  - file: src/llama-graph.cpp
+    signature: 'static ggml_tensor * ggml_mul_mat_aux('
+    occurrences: 1
+
+  - file: src/llama-graph.h
+    signature: 'cparams.embeddings  == other.cparams.embeddings  &&'
+    occurrences: 1
+
+  - file: src/llama-kv-cache-dsa.cpp
+    signature: 'auto ubatch = n_stream == 1 ? balloc.split_simple(n_ubatch) : balloc.split_equal(n_ubatch, true);'
+    occurrences: 1
+
+  - file: src/llama-kv-cache-iswa.cpp
+    signature: 'const  layer_share_cb & share) : hparams(model.hparams), unified(unified) {'
+    occurrences: 1
+
+  - file: src/llama-kv-cache-iswa.h
+    signature: 'const llama_hparams & hparams;'
+    occurrences: 1
+
+  - file: src/llama-kv-cache.cpp
+    signature: 'static ggml_tensor * ggml_mul_mat_aux('
+    occurrences: 1
+
+  - file: src/llama-memory-hybrid-iswa.cpp
+    signature: 'if (mem_recr->n_rs_seq > 0) {'
+    occurrences: 1
+
+  - file: src/llama-memory-hybrid.cpp
+    signature: 'if (mem_recr->n_rs_seq > 0) {'
+    occurrences: 1
+
+  - file: src/llama-memory-recurrent.cpp
+    signature: 'if (n_rs_seq > 0) {'
+    occurrences: 1
+
+  - file: src/llama-model-loader.cpp
+    signature: 'static std::string llama_model_ftype_name(llama_ftype ftype) {'
+    occurrences: 1
+
+  - file: src/llama-model-loader.h
+    signature: 'bool use_mmap,'
+    occurrences: 1
+
+  - file: src/llama-model.cpp
+    signature: 'auto & devices = model->devices;'
+    occurrences: 1
+
+  - file: src/llama-quant.cpp
+    signature: 'else if (ftype == LLAMA_FTYPE_MOSTLY_TQ1_0 || ftype == LLAMA_FTYPE_MOSTLY_TQ2_0) {'
+    occurrences: 1
+
+  - file: src/llama-sampler.cpp
+    signature: 'llama_sampler_softmax_impl(cur_p, true);'
+    occurrences: 9
+
+  - file: src/llama-vocab.cpp
+    signature: 'if (xcda_blob_size + charsmap_offset >= precompiled_charsmap.size()) {'
+    occurrences: 1
+
+  - file: src/llama.cpp
+    signature: 'if (params.split_mode == LLAMA_SPLIT_MODE_NONE) {'
+    occurrences: 1
+
+  - file: src/models/deepseek32.cpp
+    signature: 'indexer_q = ggml_permute(ctx0, indexer_q, 0, 2, 1, 3);'
+    occurrences: 1
+
+  - file: src/models/delta-net-base.cpp
+    signature: 'cb(result, LLAMA_TENSOR_NAME_FGDN_AR, il);'
+    occurrences: 1
+
+  - file: src/models/eagle3.cpp
+    signature: 'hparams.n_embd_inp_impl = (uint32_t) target_layer_ids.size() * n_embd_tgt;'
+    occurrences: 1
+
+  - file: src/models/glm-dsa.cpp
+    signature: 'GGML_ASSERT(hparams.n_layer_nextn < hparams.n_layer_all && "n_layer_nextn must be < n_layer_impl");'
+    occurrences: 1
+
+  - file: src/models/lfm2.cpp
+    signature: 'bx = ggml_concat(ctx0, conv, bx, 0);'
+    occurrences: 1
+
+  - file: src/models/mamba-base.cpp
+    signature: 'GGML_ASSERT(d_inner % d_state == 0);'
+    occurrences: 1
+
+  - file: src/models/mamba2.cpp
+    signature: 'const int64_t d_in_proj = 2*d_inner + 2*n_group*d_state + n_head;'
+    occurrences: 1
+
+  - file: src/models/models.h
+    signature: 'using graph = llama_model_deepseek2::graph;'
+    occurrences: 3
+
+  - file: src/models/step35.cpp
+    signature: 'auto load_block_mtp = [&](int i, bool is_first_mtp) {'
+    occurrences: 1
+
+  - file: tests/peg-parser/test-gbnf-generation.cpp
+    signature: 'root ::= ([^<] | "<" [^/] | "</" [^t] | "</t" [^a] | "</ta" [^g] | "</tag" [^>])*'
+    occurrences: 1
+
+  - file: tests/test-arg-parser.cpp
+    signature: 'int main(void) {'
+    occurrences: 1
+
+  - file: tests/test-backend-ops.cpp
+    signature: '} else if (tensor->type == GGML_TYPE_I8 || tensor->type == GGML_TYPE_I16 || tensor->type == GGML_TYPE_I32) {'
+    occurrences: 1
+
+  - file: tests/test-chat-auto-parser.cpp
+    signature: 't.assert_equal("arg_value_suffix should be '</parameter>\\n'", "</parameter>\n", analysis.tools.arguments.value_suffix);'
+    occurrences: 1
+
+  - file: tests/test-chat-template.cpp
+    signature: 'static void run_single(const std::string& contents, json input, bool use_common = false, const std::string & output_path = "");'
+    occurrences: 1
+
+  - file: tests/test-chat.cpp
+    signature: 'if (parser.params_.grammar_lazy && !parser.params_.thinking_end_tag.empty()) {'
+    occurrences: 1
+
+  - file: tests/test-gguf.cpp
+    signature: 'const std::string key = "my_key_" + std::to_string((hft == HANDCRAFTED_KV_DUPLICATE_KEY ? i/2 : i));'
+    occurrences: 1
+
+  - file: tests/test-jinja.cpp
+    signature: 'test_template(t, "length list",'
+    occurrences: 1
+
+  - file: tests/test-json-schema-to-grammar.cpp
+    signature: 'root ::= ([0] | [1-9] [0-9]{0,15}) space'
+    occurrences: 1
+
+  - file: tests/test-llama-archs.cpp
+    signature: 'std::mt19937 gen(hasher(tensor->name) + *(const size_t *) userdata);'
+    occurrences: 1
+
+  - file: tests/test-model-load-cancel.cpp
+    signature: 'params.use_mmap = false;'
+    occurrences: 1
+
+  - file: tests/test-quantize-fns.cpp
+    signature: 'int main(int argc, char * argv[]) {'
+    occurrences: 1
+
+  - file: tests/test-quantize-stats.cpp
+    signature: 'mparams.use_mlock  = false;'
+    occurrences: 1
+
+  - file: tests/test-reasoning-budget.cpp
+    signature: 'const std::vector<llama_token> & start_tokens,'
+    occurrences: 1
+
+  - file: tests/test-recurrent-state-rollback.cpp
+    signature: 'common_batch_add(batch, tokens[pos], pos, { 0 }, false);'
+    occurrences: 1
+
+  - file: tests/test-sampling.cpp
+    signature: 'test_top_n_sigma({0.1f, 0.2f, 0.3f, 0.4f}, {0.571429f, 0.428571f, 0.0f, 0.0f}, 1.00f);'
+    occurrences: 1
+
+  - file: tests/test-save-load-state.cpp
+    signature: 'LOG("\n=== Test 2: state load ===\n");'
+    occurrences: 1
+
+  - file: tools/cli/cli.cpp
+    signature: 'const char * LLAMA_ASCII_LOGO = R"('
+    occurrences: 1
+
+  - file: tools/llama-bench/llama-bench.cpp
+    signature: 'std::vector<bool>                use_mmap;'
+    occurrences: 1
+
+  - file: tools/mtmd/clip-graph.h
+    signature: 'const clip_image_f32 & img;'
+    occurrences: 1
+
+  - file: tools/mtmd/clip-impl.h
+    signature: '{ PROJECTOR_TYPE_MLP,       "mlp" },'
+    occurrences: 1
+
+  - file: tools/mtmd/clip-model.h
+    signature: 'int32_t n_merge = 0; // number of patch merges **per-side**'
+    occurrences: 1
+
+  - file: tools/mtmd/clip.cpp
+    signature: 'inp = ggml_reshape_2d(ctx0, inp, n_patches, n_embd);'
+    occurrences: 1
+
+  - file: tools/mtmd/clip.h
+    signature: 'struct clip_image_u8_batch;'
+    occurrences: 1
+
+  - file: tools/mtmd/models/deepseekocr.cpp
+    signature: 'cur = build_norm(cur, layer.ln_1_w, layer.ln_1_b, NORM_TYPE_NORMAL, eps, il);'
+    occurrences: 1
+
+  - file: tools/mtmd/models/granite-speech.cpp
+    signature: 'ggml_tensor * enc_windows = ggml_reshape_3d(ctx0, cur, n_embd, window_size, nblocks_proj);'
+    occurrences: 1
+
+  - file: tools/mtmd/models/granite4-vision.cpp
+    signature: 'const int projector_count = hparams.vision_feature_layer.size();'
+    occurrences: 1
+
+  - file: tools/mtmd/models/internvl.cpp
+    signature: 'inp = ggml_concat(ctx0, inp, model.class_embedding, 1);'
+    occurrences: 1
+
+  - file: tools/mtmd/models/llava.cpp
+    signature: 'for (const auto & feature_layer : hparams.vision_feature_layer) {'
+    occurrences: 1
+
+  - file: tools/mtmd/models/pixtral.cpp
+    signature: 'const int p_y             = n_merge > 0 ? n_patches_y / n_merge : n_patches_y;'
+    occurrences: 1
+
+  - file: tools/mtmd/models/qwen3vl.cpp
+    signature: 'ggml_tensor * learned_pos_embd = resize_position_embeddings();'
+    occurrences: 1
+
+  - file: tools/mtmd/mtmd-audio.cpp
+    signature: 'void mtmd_audio_cache::fill_mel_filterbank_matrix(int   n_mel,'
+    occurrences: 1
+
+  - file: tools/mtmd/mtmd-audio.h
+    signature: 'int n_len;'
+    occurrences: 1
+
+  - file: tools/mtmd/mtmd-cli.cpp
+    signature: '* Please note that this is NOT a production-ready stuff.'
+    occurrences: 1
+
+  - file: tools/mtmd/mtmd-helper.cpp
+    signature: 'llama_pos * new_n_past) {'
+    occurrences: 3
+
+  - file: tools/mtmd/mtmd-helper.h
+    signature: 'llama_pos * new_n_past);'
+    occurrences: 3
+
+  - file: tools/mtmd/mtmd-image.cpp
+    signature: 'void mtmd_image_preprocessor::img_u8_to_f32(const clip_image_u8 & src, clip_image_f32 & dst, const float mean[3], const float std[3]) {'
+    occurrences: 1
+
+  - file: tools/mtmd/mtmd-image.h
+    signature: 'virtual bool preprocess(const clip_image_u8 & img, clip_image_f32_batch & output) = 0;'
+    occurrences: 1
+
+  - file: tools/mtmd/mtmd.cpp
+    signature: 'if (batch_f32.entries.size() == 1 || n_temporal_merge == 1) {'
+    occurrences: 1
+
+  - file: tools/parser/debug-template-parser.cpp
+    signature: 'params.parallel_tool_calls = false;'
+    occurrences: 1
+
+  - file: tools/server/server-chat.cpp
+    signature: 'std::string result_text;'
+    occurrences: 1
+
+  - file: tools/server/server-common.cpp
+    signature: 'int32_t server_tokens::process_chunk('
+    occurrences: 1
+
+  - file: tools/server/server-common.h
+    signature: 'int32_t process_chunk('
+    occurrences: 1
+
+  - file: tools/server/server-context.cpp
+    signature: 'enum server_state {'
+    occurrences: 1
+
+  - file: tools/server/server-context.h
+    signature: 'json json_ui_settings;            // Primary: new name'
+    occurrences: 1
+
+  - file: tools/server/server-cors-proxy.h
+    signature: 'SRV_INF("proxying %s request to %s://%s:%i%s\n", method.c_str(), parsed_url.scheme.c_str(), parsed_url.host.c_str(), parsed_url.port, parsed_url.path.c_str());'
+    occurrences: 1
+
+  - file: tools/server/server-http.cpp
+    signature: 'SRV_INF("Google Cloud Platform compat: health route = %s, predict route = %s, port = %d\n", gcp.path_health.c_str(), gcp.path_predict.c_str(), gcp.port);'
+    occurrences: 1
+
+  - file: tools/server/server-models.cpp
+    signature: 'common_params_handle_models(params, LLAMA_EXAMPLE_SERVER);'
+    occurrences: 1
+
+  - file: tools/server/server-models.h
+    signature: 'static server_model_status server_model_status_from_string(const std::string & status_str) {'
+    occurrences: 1
+
+  - file: tools/server/server-task.cpp
+    signature: 'task_params server_task::params_from_json_cmpl('
+    occurrences: 1
+
+  - file: tools/server/server-task.h
+    signature: 'int32_t n_before_user = -1;'
+    occurrences: 1
+
+  - file: tools/server/server-tools.cpp
+    signature: 'static std::vector<char *> to_cstr_vec(const std::vector<std::string> & v) {'
+    occurrences: 1
+
+  - file: tools/server/server-tools.h
+    signature: 'virtual json get_definition() = 0;'
+    occurrences: 1
+
+  - file: tools/server/server.cpp
+    signature: 'int llama_server(int argc, char ** argv);'
+    occurrences: 1
+
+  - file: tools/tokenize/tokenize.cpp
+    signature: 'static void print_usage_information(const char * argv0) {'
+    occurrences: 1
+
+  - file: tools/ui/embed.cpp
+    signature: '{ "loading.html",         exact("loading.html"),         false },'
+    occurrences: 1
+
+  - file: tools/ui/package-lock.json
+    signature: '"@internationalized/date": "3.10.1",'
+    occurrences: 1
+
+  - file: tools/ui/package.json
+    signature: '"@internationalized/date": "3.10.1",'
+    occurrences: 1
+
+  - file: tools/ui/pwa-assets-dark.config.ts
+    signature: 'favicons: [[48, 'favicon-dark.ico']]'
+    occurrences: 1
+
+  - file: tools/ui/pwa-assets.config.ts
+    signature: 'import { THEME_COLORS, PWA_GENERATOR_DEVICES, PWA_ASSET_GENERATOR } from './src/lib/constants/pwa';'
+    occurrences: 1
+
+  - file: tools/ui/src/app.css
+    signature: 'overflow: hidden; /* Added due to Mermaid rendering somehow causing the double scrollbar */'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/chat/index.ts
+    signature: '* **ChatFormReasoningToggle** - Thinking toggle button with effort dropdown'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/content/MarkdownContent/markdown-content.css
+    signature: 'margin-top: 0;'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/content/MarkdownContent/markdown-handlers.ts
+    signature: 'const copyBtn = target.closest('.mermaid-block-wrapper .copy-code-btn');'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/content/MarkdownContent/plugins/rehype/code-block-utils.ts
+    signature: 'PREVIEW_ICON_SVG'
+    occurrences: 2
+
+  - file: tools/ui/src/lib/components/app/content/MarkdownContent/plugins/rehype/enhance-mermaid-blocks.ts
+    signature: 'import { MERMAID_WRAPPER_CLASS, MERMAID_SCROLL_CONTAINER_CLASS } from '$lib/constants';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/content/MarkdownContent/plugins/rehype/mermaid-pre.ts
+    signature: 'import type { Plugin } from 'unified';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/content/index.ts
+    signature: '*   icon={BrainIcon}'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/dialogs/index.ts
+    signature: '* **DialogConversationTitleUpdate** - Conversation rename confirmation'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/components/app/navigation/index.ts
+    signature: '/**'
+    occurrences: 8
+
+  - file: tools/ui/src/lib/constants/agentic.ts
+    signature: 'export const NEWLINE_SEPARATOR = '\n';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/api-endpoints.ts
+    signature: 'UNLOAD: '/models/unload''
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/context-keys.ts
+    signature: 'export const CONTEXT_KEY_PROCESSING_INFO = 'processing-info';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/formatters.ts
+    signature: '/** Max length before reasoning preview is truncated */'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/model-id.ts
+    signature: 'export const MODEL_PARAMS_RE = /^\d+(\.\d+)?[BbMmKkTt]$/;'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/pwa.ts
+    signature: 'PREFERS_LIGHT: '(prefers-color-scheme: light)''
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/reasoning-effort.ts
+    signature: '{ value: 'off', label: 'Off', isOff: true },'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/routes.ts
+    signature: 'MCP: 'mcp','
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/sandbox.ts
+    signature: 'import { JsonSchemaType, ToolCallType } from '$lib/enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/settings-keys.ts
+    signature: 'ASK_FOR_TITLE_CONFIRMATION: 'askForTitleConfirmation','
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/settings-registry.ts
+    signature: 'import McpLogo from '$lib/components/app/mcp/McpLogo.svelte';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/storage.ts
+    signature: 'export const MCP_DEFAULT_ENABLED_LOCALSTORAGE_KEY = `${STORAGE_APP_NAME}.mcpDefaultEnabled`;'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/constants/ui.ts
+    signature: 'import { Settings, Search, SquarePen } from '@lucide/svelte';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/contexts/index.ts
+    signature: 'export {'
+    occurrences: 4
+
+  - file: tools/ui/src/lib/enums/files.enums.ts
+    signature: 'SVG = 'svg''
+    occurrences: 1
+
+  - file: tools/ui/src/lib/enums/index.ts
+    signature: 'export { AgenticSectionType, ContinueIntentKind, ToolCallType } from './agentic.enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/enums/settings.enums.ts
+    signature: 'SELECT = 'select''
+    occurrences: 1
+
+  - file: tools/ui/src/lib/hooks/use-auto-scroll.svelte.ts
+    signature: '* Scrolls the container to the bottom.'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/hooks/use-models-selector.svelte.ts
+    signature: 'textarea?.focus();'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/hooks/use-processing-state.svelte.ts
+    signature: 'import { config } from '$lib/stores/settings.svelte';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/hooks/use-tools-panel.svelte.ts
+    signature: 'toggleGroupExpanded(label: string): void;'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/chat.service.ts
+    signature: 'import { getJsonHeaders } from '$lib/utils/api-headers';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/database.service.ts
+    signature: 'const conv = await db[IDXDB_TABLES.conversations].get(id);'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/index.ts
+    signature: '* @see SANDBOX_TOOL_DEFINITION in constants/sandbox.ts - tool schema sent to the LLM'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/mcp.service.ts
+    signature: 'MCP_PARTIAL_REDACT_HEADERS'
+    occurrences: 4
+
+  - file: tools/ui/src/lib/services/migration.service.ts
+    signature: 'import { SETTINGS_KEYS } from '$lib/constants/settings-registry';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/models.service.ts
+    signature: 'import { apiFetch, apiPost } from '$lib/utils';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/parameter-sync.service.spec.ts
+    signature: 'import { ColorMode } from '$lib/enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/parameter-sync.service.ts
+    signature: '* @param uiSettings - Optional UI-specific settings from server'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/sandbox-harness.ts
+    signature: '* removing the iframe.'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/services/sandbox.service.ts
+    signature: 'NEWLINE_SEPARATOR,'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/agentic.svelte.ts
+    signature: 'import { ToolSource, ToolPermissionDecision } from '$lib/enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/chat.svelte.ts
+    signature: 'import { SvelteMap } from 'svelte/reactivity';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/conversations.svelte.ts
+    signature: 'import { MessageRole, HtmlInputType, FileExtensionText, ReasoningEffort } from '$lib/enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/mcp-resources.svelte.ts
+    signature: 'NEWLINE_SEPARATOR,'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/mcp.svelte.ts
+    signature: '* - OpenAI-compatible tool definition generation'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/models.svelte.ts
+    signature: 'import { ServerModelStatus, ModelModality } from '$lib/enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/server.svelte.ts
+    signature: 'async fetch(): Promise<void> {'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/settings.svelte.ts
+    signature: 'const serverParams = serverStore.defaultParams;'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/stores/tools.svelte.ts
+    signature: 'SANDBOX_TOOL_DEFINITION,'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/types/agentic.d.ts
+    signature: 'maxToolPreviewLines: number;'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/types/api.d.ts
+    signature: 'import type { ContentPartType, FileTypeAudio, ServerModelStatus, ServerRole } from '$lib/enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/types/index.ts
+    signature: 'AudioInputFormat'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/types/mcp.d.ts
+    signature: 'requestTimeoutSeconds: number;'
+    occurrences: 2
+
+  - file: tools/ui/src/lib/types/models.d.ts
+    signature: 'import type { ApiModelDataEntry, ApiModelDetails } from '$lib/types/api';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/types/reasoning.ts
+    signature: 'isOff?: boolean;'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/types/settings.d.ts
+    signature: 'ReasoningEffort,'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/abort.ts
+    signature: 'throw new DOMException('Operation was aborted', 'AbortError');'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/agentic.ts
+    signature: 'import { AgenticSectionType, ContinueIntentKind, MessageRole } from '$lib/enums';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/api-fetch.ts
+    signature: 'throw new Error(errorMessage);'
+    occurrences: 2
+
+  - file: tools/ui/src/lib/utils/api-headers.ts
+    signature: 'import { REDACTED_HEADERS } from '$lib/constants';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/api-key-validation.ts
+    signature: 'if (!apiKey) {'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/branching.ts
+    signature: '* @param messages - All messages in the conversation'
+    occurrences: 8
+
+  - file: tools/ui/src/lib/utils/code.ts
+    signature: 'FENCE_PATTERN'
+    occurrences: 2
+
+  - file: tools/ui/src/lib/utils/cors-proxy.ts
+    signature: 'import { CORS_PROXY_ENDPOINT, CORS_PROXY_URL_PARAM } from '$lib/constants';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/formatters.ts
+    signature: 'MEDIUM_DURATION_THRESHOLD,'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/index.ts
+    signature: 'getMessageDisplayList,'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/latex-protection.ts
+    signature: 'content = content.replace(/([\S].*?)\\\[([\s\S]*?)\\\](.*)/g, (match, group1, group2, group3) => {'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/mcp.ts
+    signature: 'DEFAULT_MCP_CONFIG,'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/model-names.ts
+    signature: 'const segments = trimmed.split(/[\\/]/);'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/text.ts
+    signature: 'import { NEWLINE_SEPARATOR } from '$lib/constants';'
+    occurrences: 1
+
+  - file: tools/ui/src/lib/utils/url.ts
+    signature: 'import { TWO_PART_PUBLIC_SUFFIXES, WILDCARD_PUBLIC_SUFFIXES } from '$lib/constants';'
+    occurrences: 1
+
+  - file: tools/ui/tests/e2e/pwa.e2e.ts
+    signature: 'expect(swContent).toMatch(/"_app\/immutable\/bundle\.[a-zA-Z0-9-]+\.js"/);'
+    occurrences: 1
+
+  - file: tools/ui/tests/unit/mcp-service.test.ts
+    signature: 'baseInit: RequestInit = {}'
+    occurrences: 1
+
+  - file: tools/ui/tests/unit/pwa.spec.ts
+    signature: 'it('has navigation route registered', () => {'
+    occurrences: 1
+
+  - file: tools/ui/tsconfig.json
+    signature: '"exclude": ["src/lib/services/sandbox-worker.js"]'
+    occurrences: 1
+
+  - file: tools/ui/vitest-setup-client.ts
+    signature: 'const originalFetch = globalThis.fetch;'
+    occurrences: 1
+
+  - file: vendor/cpp-httplib/httplib.cpp
+    signature: 'if (isdigit(static_cast<unsigned char>(c))) {'
+    occurrences: 1
+
+  - file: vendor/cpp-httplib/httplib.h
+    signature: 'if ('0' <= c && c <= '9') {'
+    occurrences: 1
+
+  - file: vendor/sheredom/subprocess.h
+    signature: 'subprocess_option_search_user_path = 0x10'
     occurrences: 1
 
 additive:
   - .github/workflows/rezus-release.yaml
   - .github/workflows/rezus-sync.yaml
+  - common/json-partial.cpp
+  - common/json-partial.h
+  - common/regex-partial.cpp
+  - common/regex-partial.h
+  - ggml/src/ggml-cuda/fattn-wmma-f16.cu
+  - ggml/src/ggml-cuda/fattn-wmma-f16.cuh
+  - ggml/src/ggml-hexagon/htp/hex-dma.c
+  - ggml/src/ggml-hexagon/htp/hmx-flash-attn-ops.c
+  - ggml/src/ggml-hexagon/htp/hmx-matmul-ops.c
+  - ggml/src/ggml-hexagon/htp/hmx-ops.c
+  - ggml/src/ggml-hexagon/htp/hmx-ops.h
+  - ggml/src/ggml-hexagon/htp/hmx-profile.h
+  - ggml/src/ggml-hexagon/htp/vtcm-utils.h
+  - ggml/src/ggml-hexagon/htp/worker-pool.c
+  - ggml/src/ggml-hexagon/htp/worker-pool.h
+  - ggml/src/ggml-openvino/openvino/op/unary_gelu.cpp
+  - ggml/src/ggml-vulkan/vulkan-shaders/clamp.comp
+  - ggml/src/ggml-vulkan/vulkan-shaders/cos.comp
+  - ggml/src/ggml-vulkan/vulkan-shaders/leaky_relu.comp
+  - ggml/src/ggml-vulkan/vulkan-shaders/sin.comp
+  - ggml/src/ggml-vulkan/vulkan-shaders/sqrt.comp
+  - ggml/src/ggml-vulkan/vulkan-shaders/square.comp
+  - models/templates/stepfun-ai-Step-3.5-Flash.jinja
   - scripts/generate-manifest.sh
+  - tests/export-graph-ops.cpp
+  - tests/test-json-partial.cpp
+  - tests/test-regex-partial.cpp
+  - tools/ui/src/lib/actions/fade-in-view.svelte.ts
+  - tools/ui/src/lib/components/app/chat/ChatForm/ChatFormActions/ChatFormReasoningEffortSubmenu.svelte
+  - tools/ui/src/lib/components/app/chat/ChatForm/ChatFormActions/ChatFormReasoningToggle.svelte
+  - tools/ui/src/lib/components/app/chat/ChatScreen/ChatScreenProcessingInfo.svelte
+  - tools/ui/src/lib/components/app/dialogs/DialogConversationTitleUpdate.svelte
+  - tools/ui/src/lib/components/app/navigation/DesktopIconStrip.svelte
+  - tools/ui/src/lib/components/ui/sidebar/constants.ts
+  - tools/ui/src/lib/components/ui/sidebar/context.svelte.ts
+  - tools/ui/src/lib/components/ui/sidebar/index.ts
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-content.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-footer.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-group-action.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-group-content.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-group-label.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-group.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-header.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-input.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-inset.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-action.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-badge.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-button.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-item.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-skeleton.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-sub-button.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-sub-item.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu-sub.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-menu.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-provider.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-rail.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-separator.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar-trigger.svelte
+  - tools/ui/src/lib/components/ui/sidebar/sidebar.svelte
+  - tools/ui/src/lib/contexts/processing-info.context.ts
+  - tools/ui/src/lib/hooks/use-throttle.svelte.ts
+  - tools/ui/src/lib/utils/viewport.ts
+  - tools/ui/static/favicon-dark.svg
+  - tools/ui/static/favicon.svg
+  - tools/ui/static/loading.html
