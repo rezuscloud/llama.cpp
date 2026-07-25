@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.14...3.28) # for add_link_options and implicit 
 project("llama.cpp" C CXX)
 include(CheckIncludeFileCXX)
 
+# REZUS: Vulkan shader concurrency cap for RAM-constrained CI runners.
+# See vulkan-shaders-gen.cpp - GGML_VULKAN_SHADER_CONCURRENCY environment variable
+# caps concurrent glslc shader compilation to prevent ENOMEM (upstream #24393).
+# Build arg passed via .devops/vulkan.Dockerfile, consumed by shader generator.
+
 #set(CMAKE_WARN_DEPRECATED YES)
 set(CMAKE_WARN_UNUSED_CLI YES)
 
