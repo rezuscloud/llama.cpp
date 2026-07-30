@@ -8,7 +8,21 @@ ARG APP_REVISION=N/A
 # Unset (empty) falls back to the in-source default (min(16, hw_concurrency)).
 ARG GGML_VULKAN_SHADER_CONCURRENCY=4
 
-FROM ubuntu:$UBUNTU_VERSION AS build
+ARG NODE_VERSION=24
+
+FROM docker.io/node:$NODE_VERSION AS web
+
+ARG APP_VERSION
+
+WORKDIR /app/tools/ui
+
+COPY tools/ui/package.json tools/ui/package-lock.json ./
+RUN npm ci
+
+COPY tools/ui/ ./
+RUN LLAMA_BUILD_NUMBER="$APP_VERSION" npm run build
+
+FROM docker.io/ubuntu:$UBUNTU_VERSION AS build
 
 # Install build tools
 RUN apt update && apt install -y git build-essential cmake wget xz-utils
@@ -22,8 +36,14 @@ WORKDIR /app
 
 COPY . .
 
+<<<<<<< HEAD
 RUN export GGML_VULKAN_SHADER_CONCURRENCY="${GGML_VULKAN_SHADER_CONCURRENCY}" && \
     cmake -B build -DGGML_NATIVE=OFF -DGGML_VULKAN=ON -DLLAMA_BUILD_TESTS=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON && \
+=======
+COPY --from=web /app/tools/ui/dist tools/ui/dist
+
+RUN cmake -B build -DGGML_NATIVE=OFF -DGGML_VULKAN=ON -DLLAMA_BUILD_TESTS=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON && \
+>>>>>>> upstream/master
     cmake --build build --config Release -j$(nproc)
 
 RUN mkdir -p /app/lib && \
@@ -39,7 +59,7 @@ RUN mkdir -p /app/full \
     && cp .devops/tools.sh /app/full/tools.sh
 
 ## Base image
-FROM ubuntu:$UBUNTU_VERSION AS base
+FROM docker.io/ubuntu:$UBUNTU_VERSION AS base
 
 ARG BUILD_DATE=N/A
 ARG APP_VERSION=N/A
@@ -97,7 +117,7 @@ ENTRYPOINT ["/app/tools.sh"]
 ### Light, CLI only
 FROM base AS light
 
-COPY --from=build /app/full/llama-cli /app/full/llama-completion /app
+COPY --from=build /app/full/llama /app/full/llama-cli /app/full/llama-completion /app
 
 WORKDIR /app
 
@@ -108,7 +128,7 @@ FROM base AS server
 
 ENV LLAMA_ARG_HOST=0.0.0.0
 
-COPY --from=build /app/full/llama-server /app
+COPY --from=build /app/full/llama /app/full/llama-server /app
 
 WORKDIR /app
 
