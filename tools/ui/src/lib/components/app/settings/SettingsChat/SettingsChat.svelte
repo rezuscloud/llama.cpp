@@ -12,9 +12,9 @@
 		NUMERIC_FIELDS,
 		POSITIVE_INTEGER_FIELDS,
 		SETTINGS_CHAT_SECTIONS,
-		SETTINGS_SECTION_TITLES,
-		type SettingsSection
+		SETTINGS_SECTION_TITLES
 	} from '$lib/constants';
+	import type { SettingsSection } from '$lib/types';
 	import { RouterService } from '$lib/services/router.service';
 	import { setMode } from 'mode-watcher';
 	import { ColorMode } from '$lib/enums/ui.enums';
@@ -98,7 +98,12 @@
 				const numValue = Number(processedConfig[field]);
 				if (!isNaN(numValue)) {
 					if ((POSITIVE_INTEGER_FIELDS as readonly string[]).includes(field)) {
-						processedConfig[field] = Math.max(1, Math.round(numValue));
+						const entryByMinMax = SETTINGS_CHAT_SECTIONS.flatMap(
+							(section) => section.fields ?? []
+						).find((entry) => entry.key === field);
+						const lo = entryByMinMax?.min ?? 1;
+						const hi = entryByMinMax?.max ?? Number.POSITIVE_INFINITY;
+						processedConfig[field] = Math.max(lo, Math.min(hi, Math.round(numValue)));
 					} else {
 						processedConfig[field] = numValue;
 					}
@@ -126,10 +131,7 @@
 	});
 </script>
 
-<div
-	class="mx-auto flex h-full max-h-[100dvh] w-full flex-col overflow-y-auto md:pl-8"
-	in:fade={{ duration: 150 }}
->
+<div class="mx-auto flex h-full w-full flex-col md:pl-8" in:fade={{ duration: 150 }}>
 	<div class="flex flex-1 flex-col gap-4 md:flex-row">
 		<SettingsChatDesktopSidebar
 			sections={SETTINGS_CHAT_SECTIONS}
